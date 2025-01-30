@@ -7,6 +7,7 @@ import ResumeUploadForm from '../components/ResumeUploadForm'
 export default function Builder() {
 const [user, setUser] = useState(null)
   const [loading, setLoading] = useState(true)
+  const [resumeText, setResumeText] = useState('');
 
   useEffect(() => {
     const checkAuth = async () => {
@@ -44,6 +45,16 @@ const [user, setUser] = useState(null)
     fetchResumes()
   }, [user])
 
+    // Load resume text when resume is selected
+    const loadResumeText = async (filePath) => {
+        const { data } = await supabase.storage
+          .from('resumes')
+          .download(filePath);
+    
+        const text = await parseResume(data);
+        setResumeText(text);
+      };
+
   return (
     <>
       {/* <Navbar /> */}
@@ -78,6 +89,9 @@ const [user, setUser] = useState(null)
                 </div>
               ))}
             </div>
+            {resumeText && (
+        <JobDescriptionAnalysis resumeText={resumeText} />
+      )}
           </>
         ) : (
           <div className="alert alert-warning">
