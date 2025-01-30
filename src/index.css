@@ -1,0 +1,34 @@
+/* Full-width container override */
+.container-fluid {
+  padding-left: 2rem;
+  padding-right: 2rem;
+}
+
+/* Auth form customizations */
+.supabase-auth-ui_ui-container {
+  width: 100% !important;
+  max-width: 100% !important;
+}
+
+.supabase-auth-ui_ui-input {
+  width: 100% !important;
+  margin-bottom: 1rem !important;
+}
+
+/* Full-width buttons */
+.supabase-auth-ui_ui-button {
+  width: 100% !important;
+  margin-top: 1rem !important;
+}
+
+/* Add to index.css */
+.dropdown-menu {
+  display: none;
+  position: absolute;
+  right: 0;
+}
+
+.dropdown-menu.show {
+  display: block;
+  margin-top: 0.5rem;
+}
