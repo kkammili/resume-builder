@@ -1,11 +1,14 @@
 import { useState, useEffect } from 'react'
-import { useUser } from '@supabase/auth-helpers-react'
+// import { useUser } from '@supabase/auth-helpers-react'
 import { supabase } from '../supabaseClient'
 import Navbar from '../components/Navbar'
 import ResumeUploadForm from '../components/ResumeUploadForm'
+import ResumeSelector from '../components/ResumeSelector'
+import { parseResume } from '../utils/parseResume'
+import JobDescriptionAnalysis from '../components/JobDescriptionAnalysis'
 
 export default function Builder() {
-const [user, setUser] = useState(null)
+  const [user, setUser] = useState(null)
   const [loading, setLoading] = useState(true)
   const [resumeText, setResumeText] = useState('');
 
@@ -33,7 +36,7 @@ const [user, setUser] = useState(null)
   useEffect(() => {
     const fetchResumes = async () => {
       if (!user) return
-      
+
       const { data, error } = await supabase
         .from('resumes')
         .select('*')
@@ -45,16 +48,6 @@ const [user, setUser] = useState(null)
     fetchResumes()
   }, [user])
 
-    // Load resume text when resume is selected
-    const loadResumeText = async (filePath) => {
-        const { data } = await supabase.storage
-          .from('resumes')
-          .download(filePath);
-    
-        const text = await parseResume(data);
-        setResumeText(text);
-      };
-
   return (
     <>
       {/* <Navbar /> */}
@@ -63,35 +56,13 @@ const [user, setUser] = useState(null)
         {user ? (
           <>
             <ResumeUploadForm userId={user.id} />
-            
-            <div className="mt-4">
-              <h4>Your Saved Resumes</h4>
-              {resumes.map(resume => (
-                <div key={resume.id} className="card mb-2">
-                  <div className="card-body">
-                    {resume.type === 'file' ? (
-                      <a 
-                        href={supabase.storage
-                          .from('resumes')
-                          .getPublicUrl(resume.file_path).data.publicUrl}
-                        target="_blank"
-                        rel="noopener noreferrer"
-                      >
-                        View PDF
-                      </a>
-                    ) : (
-                      <div>
-                        <h5>Manual Resume</h5>
-                        <p>{resume.content.summary}</p>
-                      </div>
-                    )}
-                  </div>
-                </div>
-              ))}
-            </div>
+
+            <h2 className="mb-4">Resume Analyzer</h2>
+
+            <ResumeSelector onSelect={(text) => setResumeText(text)} />
             {resumeText && (
-        <JobDescriptionAnalysis resumeText={resumeText} />
-      )}
+              <JobDescriptionAnalysis resumeText={resumeText} />
+            )}
           </>
         ) : (
           <div className="alert alert-warning">
