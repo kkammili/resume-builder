@@ -1,10 +1,7 @@
 import { useState, useEffect } from 'react'
-// import { useUser } from '@supabase/auth-helpers-react'
 import { supabase } from '../supabaseClient'
-import Navbar from '../components/Navbar'
 import ResumeUploadForm from '../components/ResumeUploadForm'
 import ResumeSelector from '../components/ResumeSelector'
-// import { parseResume } from '../utils/parseResume'
 import JobDescriptionAnalysis from '../components/JobDescriptionAnalysis'
 
 export default function Builder() {
