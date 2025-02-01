@@ -4,13 +4,14 @@ import { supabase } from '../supabaseClient'
 import Navbar from '../components/Navbar'
 import ResumeUploadForm from '../components/ResumeUploadForm'
 import ResumeSelector from '../components/ResumeSelector'
-import { parseResume } from '../utils/parseResume'
+// import { parseResume } from '../utils/parseResume'
 import JobDescriptionAnalysis from '../components/JobDescriptionAnalysis'
 
 export default function Builder() {
   const [user, setUser] = useState(null)
   const [loading, setLoading] = useState(true)
   const [resumeText, setResumeText] = useState('');
+  const [activeTab, setActiveTab] = useState('select')
 
   useEffect(() => {
     const checkAuth = async () => {
@@ -50,19 +51,50 @@ export default function Builder() {
 
   return (
     <>
-      {/* <Navbar /> */}
       <main className="container mt-4">
         <h2>Resume Builder</h2>
         {user ? (
           <>
-            <ResumeUploadForm userId={user.id} />
+            <ul className="nav nav-tabs">
+              <li className="nav-item">
+                <button
+                  className={`nav-link ${activeTab === 'select' ? 'active' : ''}`}
+                  onClick={() => setActiveTab('select')}
+                >
+                  Select Resume
 
-            <h2 className="mb-4">Resume Analyzer</h2>
+                </button>
+              </li>
+              <li className="nav-item">
+                <button
+                  className={`nav-link ${activeTab === 'upload' ? 'active' : ''}`}
+                  onClick={() => setActiveTab('upload')}
+                >
+                  Upload Resume
 
-            <ResumeSelector onSelect={(text) => setResumeText(text)} />
-            {resumeText && (
-              <JobDescriptionAnalysis resumeText={resumeText} />
-            )}
+                </button>
+              </li>
+            </ul>
+            {
+              activeTab === 'select' && (
+                <>
+                  <ResumeSelector onSelect={(text) => setResumeText(text)} />
+                  {resumeText && (
+                    <JobDescriptionAnalysis resumeText={resumeText} />
+                  )}
+                </>
+              )
+            }
+
+            {
+              activeTab === 'upload' && (
+                <>
+                  <ResumeUploadForm userId={user.id} />
+
+                  <h2 className="mb-4">Resume Analyzer</h2>
+                </>
+              )
+            }
           </>
         ) : (
           <div className="alert alert-warning">
